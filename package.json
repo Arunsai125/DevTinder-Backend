@@ -1,0 +1,18 @@
+{
+  "name": "devtinder---backend",
+  "version": "1.0.0",
+  "description": "This is the backed repo built using Node.js for the dev community",
+  "keywords": [
+    "Node.js",
+    "MongoDB",
+    "Backend",
+    "NamasteNode"
+  ],
+  "license": "ISC",
+  "author": "Arun Sai Narla",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest"
+  }
+}
