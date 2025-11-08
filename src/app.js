@@ -19,12 +19,18 @@ const port = 8080;
     res.send("The File has been successfully delted !!")
  });
 
+ // GET with id
+  app.get("/user/:userId", (req,res) =>{
+    console.log(req.params);
+    res.send({firstName : "arun", lastName: "sai"});
+  })
+
  app.get("/test", (req,res) =>{
     res.send("Hey there, this is the endpoint of the /test api");
  })
 
 
- 
+
 
 
 
