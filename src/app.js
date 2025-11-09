@@ -19,21 +19,35 @@ const port = 8080;
     res.send("The File has been successfully delted !!")
  });
 
- // GET with id
+ // GET with Id
   app.get("/user/:userId", (req,res) =>{
     console.log(req.params);
     res.send({firstName : "arun", lastName: "sai"});
   })
 
+  // DELETE with Id
   app.delete("/project/:projectId", (req,res) =>{
-    console.log(req.params);
+    console.log("Project with ID:", req.params);
     res.send("The project has been deleted successfully !!");
   })
 
- app.get("/test", (req,res) =>{
-    res.send("Hey there, this is the endpoint of the /test api");
- })
-
+  // Handling Multiple Route Handlers
+  app.use("/route", (req,res,next)=>{
+    console.log("Route Handler 1️⃣");
+    next();
+    //res.send("Handled RH1");
+  },
+  (req,res,next) =>{
+    console.log("Route Handler 2️⃣");
+    next();
+    //res.send("Handled RH2");
+  },
+  (req,res,next) =>{
+    console.log("Route Handler 3️⃣");
+    next();
+    res.send("Handled RH3");
+  },
+)
 
 
 
