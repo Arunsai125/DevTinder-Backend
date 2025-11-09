@@ -25,6 +25,11 @@ const port = 8080;
     res.send({firstName : "arun", lastName: "sai"});
   })
 
+  app.delete("/project/:projectId", (req,res) =>{
+    console.log(req.params);
+    res.send("The project has been deleted successfully !!");
+  })
+
  app.get("/test", (req,res) =>{
     res.send("Hey there, this is the endpoint of the /test api");
  })
