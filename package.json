@@ -10,7 +10,7 @@
   ],
   "license": "ISC",
   "author": "Arun Sai Narla",
-  "type": "commonjs",
+  "type": "module",
   "main": "app.js",
   "scripts": {
     "dev" : "nodemon src/app.js",
