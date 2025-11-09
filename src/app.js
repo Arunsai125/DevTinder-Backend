@@ -7,10 +7,18 @@ const port = 8080;
 
  app.listen(port, () =>{console.log(`Server started on port ${port}`)});
 
- // GET
- app.get("/", (req,res) => {
+
+ app.get("/test", (req,res) =>{
+    throw new Error("test failed");
+    res.send("User Data Sent");
+ })
+
+  // GET
+ app.use("/", (err, req , res, next) => {
+    if(err) res.status(500).send("Something went wrong in your code !!");
     res.send("Hello from the dashboard !!");
  });
+
 
  app.use("/login", (req,res) =>{
     res.send("This feature would be implemented soon!");
