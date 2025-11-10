@@ -1,11 +1,18 @@
 import express from "express";
 import {userAuth, adminAuth} from "./middleware/auth.js";
+import connectDB from "../src/utils/database.js";
 
 
 const port = 8080;
- const app = express();
+const app = express();
 
- app.listen(port, () =>{console.log(`Server started on port ${port}`)});
+connectDB().then(
+    () => {
+        console.log("DB Connection Successful !");
+        app.listen(port, () =>{console.log(`Server started on port ${port}`)});
+    }
+).catch((err) => {console.error("DB Connection Failed !!")});
+
 
 
  app.get("/test", (req,res) =>{
