@@ -14,6 +14,7 @@ connectDB().then(
 ).catch((err) => {console.error("DB Connection Failed !!" + err.message)});
 
 app.use(express.json());
+
 app.post("/signup", async(req, res) =>{
 const userData = new userModel(req.body);
 
@@ -26,6 +27,37 @@ try{
     }
 });
 
+app.get("/user", async (req, res) => {
+    const userEmail = req.body.emailId;
+    try{
+        console.log(userEmail);
+        const userFetched = await userModel.find({emailId : userEmail});
+        if(userFetched.length === 0){
+            res.status(404).send("User Not found, Make sure the emailId is correct !!");
+        }   
+        else { res.send(userFetched); }
+    }
+    catch(err){
+        res.status(400).send("Something went Wrong !!");
+    }
+});
+
+
+app.get("/feed", async (req,res) => {
+    try{
+        const allUsers = await userModel.find({});
+        if(allUsers.length === 0){
+            res.status(404).send("User Not found, Make sure the emailId is correct !!");
+        }
+        else{
+            res.send(allUsers);
+        }
+    }
+    catch(err){
+        res.status(400).send("Something went wrong !!");
+    }
+
+});
 
 
 
