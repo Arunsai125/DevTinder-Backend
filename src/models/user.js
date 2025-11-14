@@ -10,4 +10,6 @@ const UserSchema = new Schema({
     gender : {type:String}
 });
 
-const userModel = mongoose.model("User", userSchema);
+const userModel = mongoose.model("User", UserSchema);
+
+export default userModel;
