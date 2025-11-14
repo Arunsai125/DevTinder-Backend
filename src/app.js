@@ -1,5 +1,4 @@
 import express from "express";
-import {userAuth, adminAuth} from "./middleware/auth.js";
 import connectDB from "../src/utils/database.js";
 import userModel from "./models/user.js";
 
