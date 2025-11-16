@@ -59,7 +59,46 @@ app.get("/feed", async (req,res) => {
 
 });
 
+app.get("/userWithId", async (req,res) => {
+    try{
+        const userIdInputted = req.body.userId;
+        const userFetched = await userModel.findById( userIdInputted);
+        if(!userFetched){
+            res.status(404).send("User Not Found !!");
+        }
+        else{
+            res.send(userFetched);
+        }
+    }
+    catch(err){
+        res.status(400).send("Something went wrong" + err.message);
+    }
+});
 
+
+app.delete("/user", async (req,res) => {
+    const userIdFromBody = req.body.userId;
+    try{
+        const deletedUser = await userModel.findByIdAndDelete(userIdFromBody);
+        res.send("User Deletion Successful !");
+    }
+    catch(err){
+        res.status(400).send("Something went Wrong !!");
+    }
+});
+
+
+app.patch("/user", async(req, res) =>{
+    const userId = req.body.userId;
+    const data = req.body;
+    try{
+        const updatedUser = await userModel.findByIdAndUpdate(userId, data);
+        res.send("User updated Successfully !!");
+    }
+    catch(err){
+        res.status(400).send("Something went wrong !!");
+    }
+});
 
 
 
