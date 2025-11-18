@@ -88,15 +88,22 @@ app.delete("/user", async (req,res) => {
 });
 
 
-app.patch("/user", async(req, res) =>{
-    const userId = req.body.userId;
+app.patch("/user/:userId", async(req, res) =>{
+    const userId = req.params?.userId;
     const data = req.body;
     try{
-        const updatedUser = await userModel.findByIdAndUpdate(userId, data);
-        res.send("User updated Successfully !!");
+        const ALLOWED_ENTRIES = ["age", "photoUrl", "gender"];
+        const isValid = Object.keys(data).every((key) => ALLOWED_ENTRIES.includes(key));
+        if(isValid){
+            const updatedUser = await userModel.findByIdAndUpdate(userId, data);
+            res.send("User updated Successfully !!");
+        }
+        else{
+            res.status(400).send("Please enter the valid fileds to be updated");
+        }
     }
     catch(err){
-        res.status(400).send("Something went wrong !!");
+        res.status(400).send("Something went wrong !!" + err.message);
     }
 });
 
