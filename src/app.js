@@ -1,7 +1,8 @@
 import express from "express";
 import connectDB from "../src/utils/database.js";
 import userModel from "./models/user.js";
-
+import validateData from "./utils/validation.js";
+import bcrypt from "bcrypt";
 
 const port = 8080;
 const app = express();
@@ -16,9 +17,13 @@ connectDB().then(
 app.use(express.json());
 
 app.post("/signup", async(req, res) =>{
-    const userData = new userModel(req.body);
-
     try{
+        validateData(req);
+        const {firstName, lastName, emailId, password} = req.body;
+        const pwdHashed = await bcrypt.hash(password, 10);
+        const userData = new userModel({
+            firstName, lastName, emailId, password: pwdHashed
+        });
         await userData.save();
         res.send("User Data has been saved successfully!!");
     }
