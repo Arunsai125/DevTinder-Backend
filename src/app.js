@@ -16,15 +16,15 @@ connectDB().then(
 app.use(express.json());
 
 app.post("/signup", async(req, res) =>{
-const userData = new userModel(req.body);
+    const userData = new userModel(req.body);
 
-try{
-    await userData.save();
-    res.send("User Data has been saved successfully!!");
-}
-    catch(err){
-        res.status(400).send("Error saving the user : " + err.message);
+    try{
+        await userData.save();
+        res.send("User Data has been saved successfully!!");
     }
+        catch(err){
+            res.status(400).send("Error saving the user : " + err.message);
+        }
 });
 
 app.get("/user", async (req, res) => {
