@@ -33,12 +33,17 @@ app.post("/signup", async(req, res) =>{
 });
 
 app.post("/login", async(req, res) =>{
-    const {emailId, password} = req.body;
-    const user = await userModel.findOne({emailId});
-    if(!user) throw new Error ("Invalid credentials!!");
-    const isValidationSuccess = await bcrypt.compare(password, user.password);
-    if(!isValidationSuccess)  throw new Error ("Invalid credentials!!");
-    else res.send("User Login Successful !")
+    try{
+        const {emailId, password} = req.body;
+        const user = await userModel.findOne({emailId});
+        if(!user) throw new Error ("Invalid credentials!!");
+        const isValidationSuccess = await bcrypt.compare(password, user.password);
+        if(!isValidationSuccess)  throw new Error ("Invalid credentials!!");
+        else res.send("User Login Successful !");
+    }
+    catch(err){
+        res.status(400).send("Something went wrong: " + err.message);
+    }
 });
 
 app.get("/user", async (req, res) => {
