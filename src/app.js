@@ -3,6 +3,7 @@ import connectDB from "../src/utils/database.js";
 import userModel from "./models/user.js";
 import validateData from "./utils/validation.js";
 import bcrypt from "bcrypt";
+import cookieParser from "cookie-parser";
 
 const port = 8080;
 const app = express();
@@ -15,6 +16,7 @@ connectDB().then(
 ).catch((err) => {console.error("DB Connection Failed !!" + err.message)});
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async(req, res) =>{
     try{
@@ -38,12 +40,30 @@ app.post("/login", async(req, res) =>{
         const user = await userModel.findOne({emailId});
         if(!user) throw new Error ("Invalid credentials!!");
         const isValidationSuccess = await bcrypt.compare(password, user.password);
-        if(!isValidationSuccess)  throw new Error ("Invalid credentials!!");
-        else res.send("User Login Successful !");
+        if(isValidationSuccess){
+            const token = "cqcqh%kg&cgjcfy$gfjf(hjh*$$cdf#";
+            res.cookie("token", token);
+            res.send("User Login Successful !");
+        }
+        else throw new Error ("Invalid credentials!!");
+
     }
     catch(err){
         res.status(400).send("Something went wrong: " + err.message);
     }
+});
+
+
+app.get("/profile", async (req,res) =>{
+    try{
+        const {token} = req.cookies;
+        console.log(token);
+        res.send("Here's the cookie --->  " + token);
+    }
+    catch(err){
+        res.status(400).send("Error:" + err.message);
+    }
+
 });
 
 app.get("/user", async (req, res) => {
