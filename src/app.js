@@ -1,12 +1,12 @@
 import express from "express";
-import connectDB from "../src/utils/database.js";
+import connectDB from "./utils/database.js";
 import userModel from "./models/user.js";
 import validateData from "./utils/validation.js";
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { decode } from "punycode";
+import userAuth from "./middleware/auth.js";
 
 dotenv.config();
 const port = 8080;
@@ -58,103 +58,16 @@ app.post("/login", async(req, res) =>{
 });
 
 
-app.get("/profile", async (req,res) =>{
+app.get("/profile", userAuth, async (req,res) =>{
     try{
-        const cookies = req.cookies;
-        console.log(cookies);
-        const {token} = cookies;
-        if(!token) throw new Error("Invalid Token!!");
-        const decodedMessage = await jwt.verify(token, process.env.JWT_SECRET_KEY);
-        console.log(decodedMessage);
-        const{_id} = decodedMessage;
-        const userData = await userModel.findById(_id);
+        const userData = req.user;
         if(!userData) throw new Error("User not found!!");
-    res.send(userData);
+        res.send(userData);
     }
     catch(err){
         res.status(400).send("Error:" + err.message);
     }
 
-});
-
-app.get("/user", async (req, res) => {
-    const userEmail = req.body.emailId;
-    try{
-        console.log(userEmail);
-        const userFetched = await userModel.find({emailId : userEmail});
-        if(userFetched.length === 0){
-            res.status(404).send("User Not found, Make sure the emailId is correct !!");
-        }   
-        else { res.send(userFetched); }
-    }
-    catch(err){
-        res.status(400).send("Something went Wrong !!");
-    }
-});
-
-
-app.get("/feed", async (req,res) => {
-    try{
-        const allUsers = await userModel.find({});
-        if(allUsers.length === 0){
-            res.status(404).send("User Not found, Make sure the emailId is correct !!");
-        }
-        else{
-            res.send(allUsers);
-        }
-    }
-    catch(err){
-        res.status(400).send("Something went wrong !!");
-    }
-
-});
-
-app.get("/userWithId", async (req,res) => {
-    try{
-        const userIdInputted = req.body.userId;
-        const userFetched = await userModel.findById( userIdInputted);
-        if(!userFetched){
-            res.status(404).send("User Not Found !!");
-        }
-        else{
-            res.send(userFetched);
-        }
-    }
-    catch(err){
-        res.status(400).send("Something went wrong" + err.message);
-    }
-});
-
-
-app.delete("/user", async (req,res) => {
-    const userIdFromBody = req.body.userId;
-    try{
-        const deletedUser = await userModel.findByIdAndDelete(userIdFromBody);
-        res.send("User Deletion Successful !");
-    }
-    catch(err){
-        res.status(400).send("Something went Wrong !!");
-    }
-});
-
-
-app.patch("/user/:userId", async(req, res) =>{
-    const userId = req.params?.userId;
-    const data = req.body;
-    try{
-        const ALLOWED_ENTRIES = ["age", "photoUrl", "gender"];
-        const isValid = Object.keys(data).every((key) => ALLOWED_ENTRIES.includes(key));
-        if(isValid){
-            const updatedUser = await userModel.findByIdAndUpdate(userId, data);
-            res.send("User updated Successfully !!");
-        }
-        else{
-            res.status(400).send("Please enter the valid fileds to be updated");
-        }
-    }
-    catch(err){
-        res.status(400).send("Something went wrong !!" + err.message);
-    }
 });
 
 

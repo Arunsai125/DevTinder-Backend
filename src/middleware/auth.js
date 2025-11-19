@@ -1,23 +1,23 @@
-export const userAuth = (req,res,next) => {
-    console.log("User Authentication has started !");
-    const token  = "jwt-secret";
-    if(token === "jwt-secret"){
-        console.log("User Authentication Successful!");
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import userModel from "../models/user.js";
+
+dotenv.config();
+
+const userAuth = async (req,res,next) => {
+    try{
+        const {token} = req.cookies;
+        if(!token) throw new Error("Not a valid token !!");
+        const decodedObject = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        const {_id} = decodedObject;
+        const user =  await userModel.findById(_id);
+        if(!user) throw new Error("User data not found!!");
+        else req.user = user;
         next();
     }
-    else{
-        res.status(401).send("Unauthorized User, Ban and Report Him to CBI");
+    catch(err){
+        res.status(400).send("OOPS!!, You've ran into error -->  " + err.message);
     }
 };
 
-export const adminAuth = (req,res, next) => {
-    console.log("Admin Authentication has started !");
-    const token  = "jwt-secret3";
-    if(token === "jwt-secret2"){
-        console.log("Admin Authentication Successful!");
-        next();
-    }
-    else{
-        res.status(401).send("Unauthorized Admin, Try Again!");
-    }
-}
+export default userAuth;
