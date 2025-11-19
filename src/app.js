@@ -4,7 +4,6 @@ import userModel from "./models/user.js";
 import validateData from "./utils/validation.js";
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import userAuth from "./middleware/auth.js";
 
@@ -43,9 +42,9 @@ app.post("/login", async(req, res) =>{
         const {emailId, password} = req.body;
         const user = await userModel.findOne({emailId});
         if(!user) throw new Error ("Invalid credentials!!");
-        const isValidationSuccess = await bcrypt.compare(password, user.password);
+        const isValidationSuccess = await user.validatePassword(password);
         if(isValidationSuccess){
-            const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY, {expiresIn : "1d"});
+            const token = await user.getJWT();
             res.cookie("token", token);
             res.send("User Login Successful !");
         }
