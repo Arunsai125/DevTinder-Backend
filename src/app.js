@@ -4,7 +4,11 @@ import userModel from "./models/user.js";
 import validateData from "./utils/validation.js";
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import { decode } from "punycode";
 
+dotenv.config();
 const port = 8080;
 const app = express();
 
@@ -41,7 +45,7 @@ app.post("/login", async(req, res) =>{
         if(!user) throw new Error ("Invalid credentials!!");
         const isValidationSuccess = await bcrypt.compare(password, user.password);
         if(isValidationSuccess){
-            const token = "cqcqh%kg&cgjcfy$gfjf(hjh*$$cdf#";
+            const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY);
             res.cookie("token", token);
             res.send("User Login Successful !");
         }
@@ -56,9 +60,16 @@ app.post("/login", async(req, res) =>{
 
 app.get("/profile", async (req,res) =>{
     try{
-        const {token} = req.cookies;
-        console.log(token);
-        res.send("Here's the cookie --->  " + token);
+        const cookies = req.cookies;
+        console.log(cookies);
+        const {token} = cookies;
+        if(!token) throw new Error("Invalid Token!!");
+        const decodedMessage = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+        console.log(decodedMessage);
+        const{_id} = decodedMessage;
+        const userData = await userModel.findById(_id);
+        if(!userData) throw new Error("User not found!!");
+    res.send(userData);
     }
     catch(err){
         res.status(400).send("Error:" + err.message);
