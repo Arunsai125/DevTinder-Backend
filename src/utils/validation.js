@@ -8,4 +8,10 @@ const validateData = (req) => {
     else if(!validator.isStrongPassword(password)) throw new Error("Not a strong password !");
 } 
 
+export const validateProfileEditableData = (req) =>{
+    const fieldsEditable = ["firstName", "lastName", "age", "photoUrl", "gender"];
+    const isValidPatchRequest = Object.keys(req.body).every((field) => fieldsEditable.includes(field));
+    return isValidPatchRequest;
+}
+
 export default validateData;
