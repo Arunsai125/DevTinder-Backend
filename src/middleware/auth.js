@@ -8,8 +8,8 @@ const userAuth = async (req,res,next) => {
     try{
         const {token} = req.cookies;
         if(!token) throw new Error("Not a valid token !!");
-        const decodedObject = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        const {_id} = decodedObject;
+        const decodedmessage = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        const {_id} = decodedmessage;
         const user =  await userModel.findById(_id);
         if(!user) throw new Error("User data not found!!");
         else req.user = user;
