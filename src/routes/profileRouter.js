@@ -3,7 +3,7 @@ import userAuth from "../middleware/auth.js";
 
 const profileRouter = express.Router();
 
-profileRouter.post("/profile", userAuth, async (req,res) =>{
+profileRouter.get("/profile", userAuth, async (req,res) =>{
     try{
         const userData = req.user;
         if(!userData) throw new Error("User not found!!");
