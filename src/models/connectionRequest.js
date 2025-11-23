@@ -1,4 +1,4 @@
-import mongoose, {Schema} from mongoose;
+import mongoose, {Schema} from "mongoose";
 
 const connectionRequestSchema = new Schema({
     fromUserId : {
@@ -18,6 +18,8 @@ const connectionRequestSchema = new Schema({
         }
     }
 }, {timestamps : true});
+
+connectionRequestSchema.index({fromUserId:1, toUserId:1});
 
 const connectionRequestSchemaModel = new mongoose.model("connectionRequest", connectionRequestSchema);
 export default connectionRequestSchemaModel;

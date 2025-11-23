@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import authRouter from "./routes/authRouter.js";
 import profileRouter from "./routes/profileRouter.js";
+import requestRouter from "./routes/requestRouter.js";
 
 dotenv.config();
 const port = 8080;
@@ -20,6 +21,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/", authRouter);
 app.use("/", profileRouter);
+app.use("/", requestRouter);
+
 
 
 
