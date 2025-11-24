@@ -1,7 +1,7 @@
 import express from "express";
 import userAuth from  "../middleware/auth.js";
 import connectionRequestSchemaModel from "../models/connectionRequest.js";
-
+import userModel from "../models/user.js";
 
 
 const requestRouter = express.Router();
@@ -12,8 +12,20 @@ requestRouter.post("/request/send/:status/:userId", userAuth, async (req,res) =>
         const toUserId = req.params.userId;
         const fromUser = req.user;
         const fromUserId = fromUser._id;
+
+
         const STATUS_ALLOWED = ["interested", "ignored"];
         if(!STATUS_ALLOWED.includes(status)) throw new Error("Invalid Connection Request !!!");
+
+        const doesToUserExist = await userModel.findById(toUserId);
+        if(!doesToUserExist) throw new Error("The connection Request cannot be made to the users outside of this platform!!!");
+
+        const doesConnectionRequestExists = await connectionRequestSchemaModel.findOne({
+            $or : [{fromUserId, toUserId},{fromUserId : toUserId, toUserId:fromUserId}]
+        });
+        if(doesConnectionRequestExists) throw new Error("Hey, This connection request between " + fromUser.firstName + " and " + doesToUserExist.firstName  + " already exists");
+
+        
         const connRequest = new connectionRequestSchemaModel({fromUserId, toUserId, status});
         const connRequestData = await connRequest.save();
     res.json({message : `The request was successfully sent`, data : connRequestData });
@@ -24,3 +36,5 @@ requestRouter.post("/request/send/:status/:userId", userAuth, async (req,res) =>
 });
 
 export default requestRouter;
+
+
