@@ -35,6 +35,27 @@ requestRouter.post("/request/send/:status/:userId", userAuth, async (req,res) =>
     }
 });
 
+requestRouter.post("/request/review/:status/:requestId", userAuth, async (req,res) =>{
+    try{
+         const loggedInUser = req.user;
+         const {status, requestId} = req.params;
+         const allowedStatus = ["accepted", "rejected"];
+         if(!allowedStatus.includes(status)) throw new Error("Invalid Request !");
+         const existingRequest = await connectionRequestSchemaModel.findOne({
+            _id: requestId,
+            toUserId: loggedInUser._id,
+            status: "interested"
+         });
+         if(!existingRequest) throw new Error("Invalid Request Type!");
+         existingRequest.status = status;
+         const newData = await existingRequest.save();
+        res.json({message : ` Hey ${loggedInUser.firstName}, The request was successfully ${status} !`, data: {newData}});
+    }
+    catch(err){
+        res.status(400).send("Something went wrong: " + err.message);
+    }
+});
+
 export default requestRouter;
 
 
