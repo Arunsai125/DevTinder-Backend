@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import authRouter from "./routes/authRouter.js";
 import profileRouter from "./routes/profileRouter.js";
 import requestRouter from "./routes/requestRouter.js";
+import userRouter from "./routes/userRouter.js";
 
 dotenv.config();
 const port = 8080;
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
+app.use("/", userRouter);
 
 
 
