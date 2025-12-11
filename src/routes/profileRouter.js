@@ -39,6 +39,7 @@ profileRouter.patch("/profile/password", userAuth, async(req,res) =>{
         if(!isValidOldPassword) throw new Error("Please make sure you enter the correct current password !!");
         else{
             if(!validator.isStrongPassword(newPassword)) throw new Error("Please choose a strong password !!");
+            if(oldPassword === newPassword) throw new Error("You can't reuse your old password!");
             if(newPassword !== confirmPassword) throw new Error("Please make sure your new password matches in both the fields !!");
             else{
                 const newHashedPwd = await bcrypt.hash(newPassword,10);
