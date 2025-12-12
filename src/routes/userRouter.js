@@ -4,7 +4,7 @@ import connectionRequestSchemaModel from "../models/connectionRequest.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/user/requests/recieved", userAuth, async(req, res) =>{
+userRouter.get("/user/requests/received", userAuth, async(req, res) =>{
     try{
         const loggedInUser = req.user;
         const connectionsRecieved = await connectionRequestSchemaModel.find({
@@ -19,4 +19,21 @@ userRouter.get("/user/requests/recieved", userAuth, async(req, res) =>{
     }
 });
 
+userRouter.get("/user/connections", userAuth, async(req,res) =>{
+    try{
+        const loggedInUser = req.user;
+        const userConnections = await connectionRequestSchemaModel.find
+        ({$or: [{toUserId : loggedInUser._id}, {fromUserId : loggedInUser._id}], status : "accepted"})
+        .populate("fromUserId", ["firstName", "lastName"]);
+        const data = userConnections.map( (row) => row.fromUserId);
+        res.json({message: `Hey ${loggedInUser.firstName}, Here's the data of your ${userConnections.length} connections`, data: {data}});
+
+    }
+    catch(err){
+        res.status(400).send("Something went wrong: " + err.message);
+    }
+});
+
 export default userRouter;
+
+
