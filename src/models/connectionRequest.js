@@ -2,11 +2,12 @@ import mongoose, {Schema} from "mongoose";
 
 const connectionRequestSchema = new Schema({
     fromUserId : {
-        type : mongoose.Schema.Types.ObjectId,
-        required : true
+        type : Schema.Types.ObjectId,
+        required : true,
+        ref : "User"
     },
     toUserId : {
-        type : mongoose.Schema.Types.ObjectId,
+        type : Schema.Types.ObjectId,
         required : true
     },
     status : {

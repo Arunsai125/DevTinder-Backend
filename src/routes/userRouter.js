@@ -10,8 +10,9 @@ userRouter.get("/user/requests/recieved", userAuth, async(req, res) =>{
         const connectionsRecieved = await connectionRequestSchemaModel.find({
             toUserId : loggedInUser._id,
             status: "interested"
-        });
-        res.json({message : `Hey ${loggedInUser.firstName}, Here's the data of all the connection request that are waiting for approval`, data: {connectionsRecieved}});
+        }).populate("fromUserId", ["firstName" , "lastName"]);
+        res.json({message : `Hey ${loggedInUser.firstName}, Here's the data of all the connection 
+            request that are waiting for approval`, data: {connectionsRecieved}});
     }
     catch(err){
         res.status(400).send("Something went wrong !!" + err.message);
