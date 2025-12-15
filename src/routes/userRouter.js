@@ -39,6 +39,9 @@ userRouter.get("/user/connections", userAuth, async(req,res) =>{
 userRouter.get("/user/feed", userAuth, async (req,res) =>{
     try{
         const loggedInUser = req.user;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        let skip = (page-1) * limit;
         // Get All the User Connections that loggedInUser has sent or ignored or accepted or rejected
         const userConnections = await connectionRequestSchemaModel.find(
             {$or : [{fromUserId : loggedInUser._id},{toUserId : loggedInUser._id}]}
@@ -51,7 +54,7 @@ userRouter.get("/user/feed", userAuth, async (req,res) =>{
         // Now we return all the users from the user db that aren't included in the set
         const userFeedData = await userModel.find({
             _id:{$nin:Array.from(toBeExcluded)}
-        }).select(["_id", "firstName", "lastName", "age"]);
+        }).select(["_id", "firstName", "lastName", "age"]).skip(skip).limit(limit);
 
         res.json({message : `Hey ${loggedInUser.firstName}, Here are the list of few people you might be interested in`, data: {userFeedData} });
     }
