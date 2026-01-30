@@ -49,6 +49,11 @@ const userSchema = new Schema({
                 throw new Error("Not a valid field for gender");
             }
         }
+    },
+    about:{
+        type:String,
+        default: "Hey there, I'm a passionate web developer trying to make genius co-dev's as my friends, hit me up to connect !",
+        maxLength: 100
     }
 },{timestamps : true});
 

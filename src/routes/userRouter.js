@@ -54,7 +54,7 @@ userRouter.get("/user/feed", userAuth, async (req,res) =>{
         // Now we return all the users from the user db that aren't included in the set
         const userFeedData = await userModel.find({
             _id:{$nin:Array.from(toBeExcluded)}
-        }).select(["_id", "firstName", "lastName", "age"]).skip(skip).limit(limit);
+        }).select(["_id", "firstName", "lastName", "age", "photoUrl"]).skip(skip).limit(limit);
 
         res.json({message : `Hey ${loggedInUser.firstName}, Here are the list of few people you might be interested in`, data: {userFeedData} });
     }
