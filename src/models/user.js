@@ -53,7 +53,7 @@ const userSchema = new Schema({
     about:{
         type:String,
         default: "Hey there, I'm a passionate web developer trying to make genius co-dev's as my friends, hit me up to connect !",
-        maxLength: 100
+        maxLength: 500
     }
 },{timestamps : true});
 
