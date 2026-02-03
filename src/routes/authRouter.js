@@ -26,9 +26,9 @@ authRouter.post("/login", async(req, res) => {
 authRouter.post("/signup", async (req,res) =>{
     try{
         validateData(req);
-        const{firstName, lastName, emailId, password} = req.body;
+        const{firstName, lastName, emailId, password, age, gender, photoUrl} = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userData = new userModel({firstName, lastName, emailId, password: hashedPassword});
+        const userData = new userModel({firstName, lastName, emailId, password: hashedPassword, age, gender, photoUrl});
         await userData.save();
         res.send("User Registration Succesful, Please login to continue using your services !");
     }

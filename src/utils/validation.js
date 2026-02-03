@@ -1,7 +1,7 @@
 import validator from 'validator';
 
 const validateData = (req) => {
-    const{firstName, lastName, emailId, password} = req.body;
+    const{firstName, lastName, emailId, password, age, gender, photoUrl} = req.body;
 
     if(!firstName || !lastName) throw new Error("Not a valid name!");
     else if(!validator.isEmail(emailId)) throw new Error("Not a valid email !");
@@ -9,7 +9,7 @@ const validateData = (req) => {
 } 
 
 export const validateProfileEditableData = (req) =>{
-    const fieldsEditable = ["firstName", "lastName", "age", "photoUrl", "gender"];
+    const fieldsEditable = ["firstName", "lastName", "age", "photoUrl", "gender", "about"];
     const isValidPatchRequest = Object.keys(req.body).every((field) => fieldsEditable.includes(field));
     return isValidPatchRequest;
 }
