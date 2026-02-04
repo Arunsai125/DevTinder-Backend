@@ -24,7 +24,7 @@ userRouter.get("/user/connections", userAuth, async(req,res) =>{
         const loggedInUser = req.user;
         const userConnections = await connectionRequestSchemaModel.find
         ({$or: [{toUserId : loggedInUser._id}, {fromUserId : loggedInUser._id}], status : "accepted"})
-        .populate("fromUserId", ["firstName", "lastName"]).populate("toUserId", ["firstName", "lastName"]);
+        .populate("fromUserId", ["firstName","lastName","age","gender","photoUrl","about"]).populate("toUserId", ["firstName","lastName","age","gender","photoUrl","about"]);
         const data = userConnections.map((row) => {
             if(row.fromUserId._id.toString() === loggedInUser._id.toString()) return row.toUserId;
             return row.fromUserId});
